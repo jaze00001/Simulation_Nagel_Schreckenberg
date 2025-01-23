@@ -26,12 +26,12 @@ private:
     std::vector<Car*> writing_street;
 
 // ##################################################################### //
-// ############################ CONSTRUCTORS ########################### //
+// ###################### CONSTRUCTOR & DESTRUCTOR ##################### //
 // ##################################################################### //
 
 public:
     SimulatorPeriodic(int street_length, int initial_cars, int vmax, int iterations, float dawdle_probability, bool always_unlimited, bool start_velocity_zero, bool multicore);
-
+    ~SimulatorPeriodic();
 // ##################################################################### //
 // ############################## METHODS ############################## //
 // ##################################################################### //

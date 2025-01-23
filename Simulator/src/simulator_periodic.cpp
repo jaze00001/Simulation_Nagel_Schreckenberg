@@ -15,9 +15,9 @@
 #include <unistd.h>
 #endif
 
-// ##################################################################### //
-// ############################ CONSTRUCTORS ########################### //
-// ##################################################################### //
+// #################################################################### //
+// ##################### CONSTRUCTOR & DESTRUCTOR ##################### //
+// #################################################################### //
 
 SimulatorPeriodic::SimulatorPeriodic(int street_length, int initial_cars, int vmax, int iterations, float dawdle_probability, bool always_unlimited, bool start_velocity_zero, bool multicore)
 {
@@ -86,6 +86,22 @@ SimulatorPeriodic::SimulatorPeriodic(int street_length, int initial_cars, int vm
     std::filesystem::path filePath = outputDir / ("output_" + std::string(timeBuffer) + ".csv");
     parameters.output_file_name = filePath.string();
 }
+
+/// @brief Destructor to delete the cars from the street
+SimulatorPeriodic::~SimulatorPeriodic()
+{
+    for (Car *car : reading_street)
+    {
+        if (car)
+            delete car;
+    }
+    for (Car *car : writing_street)
+    {
+        if (car)
+            delete car;
+    }
+}
+
 // ##################################################################### //
 // ############################## METHODS ############################## //
 // ##################################################################### //

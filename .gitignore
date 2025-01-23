@@ -2,3 +2,5 @@
 .vscode/settings.json
 *.exe
 **/build
+**/output
+**/-p
