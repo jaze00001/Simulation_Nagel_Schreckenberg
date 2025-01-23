@@ -6,9 +6,11 @@
 // Struct to store the parameters of the simulation for periodic boundaries
 struct PeriodicParameters
 {
-    unsigned int street_length, initial_cars, vmax, iterations;
+    int street_length,initial_cars, iterations;
+    int vmax;
     float dawdle_probability;
-    bool always_unlimited, start_velocity_zero;
+    bool always_unlimited, start_velocity_zero, multicore;
+    std::string output_file_name;
 };
 
 class SimulatorPeriodic : public SimulatorBase
@@ -20,15 +22,15 @@ class SimulatorPeriodic : public SimulatorBase
 
 private:
     PeriodicParameters parameters;
-    std::vector<std::unique_ptr<Car>> reading_street;
-    std::vector<std::unique_ptr<Car>> writing_street;
+    std::vector<Car*> reading_street;
+    std::vector<Car*> writing_street;
 
 // ##################################################################### //
 // ############################ CONSTRUCTORS ########################### //
 // ##################################################################### //
 
 public:
-    SimulatorPeriodic(unsigned int street_length, unsigned int initial_cars, int vmax, unsigned int iterations, float dawdle_probability, bool always_unlimited, bool start_velocity_zero);
+    SimulatorPeriodic(int street_length, int initial_cars, int vmax, int iterations, float dawdle_probability, bool always_unlimited, bool start_velocity_zero, bool multicore);
 
 // ##################################################################### //
 // ############################## METHODS ############################## //
@@ -36,19 +38,20 @@ public:
 
 public:
     void perform_simulation() override;
+    void perform_simulation_singlecore() override;
+    void perform_simulation_multicore() override;
 
 private:
     // Methods to perform simulation steps and print results to file
-    void accelerate_cars(std::vector<std::unique_ptr<Car>> &reading_street, std::vector<std::unique_ptr<Car>> &writing_street, int start_index, int end_index) override;
-    void decelerate_cars(std::vector<std::unique_ptr<Car>> &reading_street, std::vector<std::unique_ptr<Car>> &writing_street, int start_index, int end_index) override;
-    void dawdle_cars(std::vector<std::unique_ptr<Car>> &reading_street, std::vector<std::unique_ptr<Car>> &writing_street, int start_index, int end_index, float dawdle_prob, std::mt19937 &rng) override;
-    void move_cars(std::vector<std::unique_ptr<Car>> &reading_street, std::vector<std::unique_ptr<Car>> &writing_street, int start_index, int end_index) override;
-    void print_street(std::vector<std::unique_ptr<Car>>& street) = 0;
-    // Perform simulation methods for multicore and single core
-    void perform_simulation() override;
+    void accelerate_cars(std::vector<Car*> &reading_street, std::vector<Car*> &writing_street, int start_index, int end_index) override;
+    void decelerate_cars(std::vector<Car*> &reading_street, std::vector<Car*> &writing_street, int start_index, int end_index) override;
+    void dawdle_cars(std::vector<Car*> &reading_street, std::vector<Car*> &writing_street, int start_index, int end_index, float dawdle_prob, std::mt19937 &rng) override;
+    void move_cars(std::vector<Car*> &reading_street, std::vector<Car*> &writing_street, int start_index, int end_index) override;
+    void print_street(std::vector<Car*>& street) override;
+    void print_parameters() override; 
     // Methods to initialize the street
     void initialize_street() override;
-    void fill_street(std::vector<std::unique_ptr<Car>> &street, unsigned int initial_cars);
+    void fill_street(std::vector<Car*> &street);
 };
 
 #endif

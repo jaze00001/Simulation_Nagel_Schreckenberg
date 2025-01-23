@@ -16,9 +16,9 @@ class Car {
         static const std::vector<std::pair<double, int>> speed_distribution;
     public:
         // Variable to store the current speed of the car. Is going to be modified by the simulator
-        const unsigned int max_speed;
+        const int max_speed;
         // Variable to store the max speed of the car
-        unsigned int speed;
+        int speed;
     
 // ##################################################################### //
 // ############################ CONSTRUCTORS ########################### //

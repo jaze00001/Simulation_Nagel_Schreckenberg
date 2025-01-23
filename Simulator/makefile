@@ -28,6 +28,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-# remove object files
+# Clean up object files and executable
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET)
+	if exist $(OBJ_DIR) rmdir /s /q $(OBJ_DIR)
+	if exist $(TARGET).exe del $(TARGET).exe
