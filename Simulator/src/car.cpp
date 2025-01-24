@@ -1,10 +1,10 @@
-#include "car.h"
+#include "../include/car.h"
 #include <random>
 #include <iostream>
 
-/*-----------------------------------------
------------------Variables-----------------
--------------------------------------------*/
+// ##################################################################### //
+// ############################# VARIABLES ############################# //
+// ##################################################################### //
 
 /* Definition of the speed distribution on the german highways for unlimited speed sections (Data from https://www.iwkoeln.de/studien/thomas-puls-jan-marten-wendt-schneller-als-130-regel-oder-ausnahme.html, 18.01.2025)
 By simplifying the data, we can say that 77% of the cars drive 130 km/h at max, 18% 160 km/h at max and 5% even faster */
@@ -15,25 +15,23 @@ const std::vector<std::pair<double, int>> Car::speed_distribution = {
     {1.00, 5}   // 77% chance of 130 km/h
 };
 
-/*-----------------------------------------
------------------Constructors--------------
--------------------------------------------*/
+// ##################################################################### //
+// ############################ CONSTRUCTORS ########################### //
+// ##################################################################### //
 
-Car::Car(bool start_velocity_zero, bool always_unlimited) : rng(std::random_device{}()),
-                                                            max_speed(compute_max_speed(always_unlimited)),
-                                                            speed(compute_start_speed(start_velocity_zero)) {} // Constructor for unlimited speed limit
-Car::Car(bool start_velocity_zero, int max_speed) : rng(std::random_device{}()),
-                                                      max_speed(max_speed),
-                                                      speed(compute_start_speed(start_velocity_zero)) {} // Constructor for limited speed limit
+Car::Car(bool start_velocity_zero, bool always_unlimited, std::mt19937 &rng) : max_speed(compute_max_speed(always_unlimited, rng)),
+                                                            speed(compute_start_speed(start_velocity_zero, rng)) {} // Constructor for unlimited speed limit
+Car::Car(bool start_velocity_zero, int max_speed, std::mt19937 &rng) :   max_speed(max_speed),
+                                                      speed(compute_start_speed(start_velocity_zero, rng)) {} // Constructor for limited speed limit
 
-/*-----------------------------------------
------------------Methods-------------------
--------------------------------------------*/
+// ##################################################################### //
+// ############################## METHODS ############################## //
+// ##################################################################### //
 
 /// @brief computes the max speed of the car based on the speed distribution on unlimited speed sections :)
 /// @param always_unlimited if true, the max speed will be 10 for all cars, otherwise a random number between 5 and 10 based on the speed distribution
 /// @return the max speed of the car
-int Car::compute_max_speed(bool always_unlimited)
+int Car::compute_max_speed(bool always_unlimited, std::mt19937 &rng)
 {
     if (always_unlimited)
         return 10;
@@ -54,7 +52,7 @@ int Car::compute_max_speed(bool always_unlimited)
 /// @brief computes the start speed of the car based on the max speed
 /// @param start_velocity_zero if true, the start speed will be 0, otherwise a random number between 0 and the max speed
 /// @return the start speed of the car
-int Car::compute_start_speed(bool start_velocity_zero)
+int Car::compute_start_speed(bool start_velocity_zero, std::mt19937 &rng)
 {
     if (start_velocity_zero)
     {
@@ -64,24 +62,3 @@ int Car::compute_start_speed(bool start_velocity_zero)
 return dis(rng);
 }
 
-/// @brief accelerates the car by 1 if its speed is below the max speed
-void Car::accelerate() {
-    if (speed < max_speed) {
-        speed++;
-    }
-}
-
-/// @brief decelerates the car by 1 if its speed is above 0
-void Car::decelerate() {
-    if (speed > 0) {
-        speed--;
-    }
-}
-
-/// @brief sets the speed of the car to a specific value
-/// @param speed the speed the car is set to
-void Car::set_speed(int speed) {
-    if (speed < 0 || speed > max_speed)
-        throw std::invalid_argument("Error: Speed must be between 0 and " + std::to_string(max_speed) + " (Code: 202)");
-    this->speed = speed;
-}
