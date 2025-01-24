@@ -2,11 +2,11 @@
 #include <iostream>
 #include <chrono>
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
     // start the timer to measure the duration of the simulation
     auto start = std::chrono::high_resolution_clock::now();
-    
+
     // check if the user provided the correct number of arguments
     if (argc == 9) // periodic boundary conditions
     {
@@ -74,13 +74,22 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        // Create a new simulator object
-        SimulatorPeriodic simulator(street_length, initial_cars, vmax, iterations, dawdle_probability, always_unlimited, start_velocity_zero, multicore);
+        // create a new simulator object and perform the simulation
+        try
+        {
+            // Create a new simulator object
+            SimulatorPeriodic simulator(street_length, initial_cars, vmax, iterations, dawdle_probability, always_unlimited, start_velocity_zero, multicore);
 
-        // Perform the simulation
-        simulator.perform_simulation();
+            // Perform the simulation
+            simulator.perform_simulation();
+        }
+        catch (const std::runtime_error &e)
+        {
+            std::cerr << "Runtime error: " << e.what() << std::endl;
+            return 1;
+        }
     }
-     
+
     /*else if (argc != 12) // open boundary conditions
     {
         int street_length;
@@ -169,24 +178,24 @@ int main(int argc, char *argv[])
 
         // TO BE IMPLEMENTED
     } */
-    
+
     else // invalid number of arguments
     {
-        std::cerr << "Usage for periodic boundary conditions: " << argv[0] 
-              << " <street_length> <initial_cars> <vmax> <iterations> <dawdle_probability> <always_unlimited> <start_velocity_zero> <multicore>" 
-              << std::endl;
-        std::cerr << "Usage for open boundary conditions: " << argv[0] 
-              << " <street_length> <initial_cars> <vmax> <iterations> <dawdle_probability> <remove_probability> <insert_probability> <remove_space> <always_unlimited> <start_velocity_zero> <multicore>" 
-              << std::endl;
+        std::cerr << "Usage for periodic boundary conditions: " << argv[0]
+                  << " <street_length> <initial_cars> <vmax> <iterations> <dawdle_probability> <always_unlimited> <start_velocity_zero> <multicore>"
+                  << std::endl;
+        std::cerr << "Usage for open boundary conditions: " << argv[0]
+                  << " <street_length> <initial_cars> <vmax> <iterations> <dawdle_probability> <remove_probability> <insert_probability> <remove_space> <always_unlimited> <start_velocity_zero> <multicore>"
+                  << std::endl;
         return 1;
     }
 
-    // if successful, print running time and return 0
-    std::cout << "Simulation successful" << std::endl;
-    
+    // if successful print the duration of the simulation and return 0
+
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "Finished! ";
     std::cout << "Duration: " << duration << " ms" << std::endl;
-    
+
     return 0;
 }

@@ -190,9 +190,6 @@ void SimulatorPeriodic::fill_street(std::vector<Car *> &street)
     // iterate over the indices and place a car at the index
     for (int i = 0; i < parameters.initial_cars; i++)
     {
-        // check if the street is empty at the index
-        if (street[indices[i]])
-            throw std::runtime_error("Error: Car already exists at position " + std::to_string(indices[i]) + " (Code: 112)"); // RENOVE LATER (for testing purposes)
         // create a new car and place it at the index
         if (parameters.always_unlimited){
             street[indices[i]] = new Car(parameters.start_velocity_zero, true, rng);
